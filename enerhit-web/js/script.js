@@ -44,7 +44,7 @@ fGaleria([],11,'clientes','galeria-clientes','col-2 col-md-4 col-lg-2 ','50%','p
 function fGaleria(galeria,cantidadFotos,carpeta,contenedor,clase,altura,formato,objectFit,Ancho){
 
     for (let i = 1; i <= cantidadFotos; i++) {
-        galeria.push(`/${carpeta}/${i}.${formato}`);
+        galeria.push(`${carpeta}/${i}.${formato}`);
         ruta=`${carpeta}/${i}.${formato}`
         console.log(ruta)
       }
