@@ -134,6 +134,13 @@ main{
   display: none;
 }
 
+.media__cover_responsive>div>p{
+    text-align: center;
+    font-weight: bold;
+    color: rgb(70, 155, 253);
+    opacity: 2;
+  }
+
 #galeriaresponsive{
     display: none;
 }
@@ -146,6 +153,13 @@ main{
     width: 50%;
 }
 
+
+.media__cover>div>p{
+    text-align: center;
+    font-weight: bold;
+    color: rgb(70, 155, 253);
+    opacity: 2;
+}
 .carousel-item img {
              
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para un efecto de profundidad */
