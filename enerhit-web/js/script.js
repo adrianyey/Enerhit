@@ -42,7 +42,7 @@ fGaleria([],4,'clientes','galeria-clientes','col-12 col-md-4 col-lg-12 ','80px',
 function fGaleria(galeria,cantidadFotos,carpeta,contenedor,clase,altura,formato,objectFit,Ancho){
 
     for (let i = 1; i <= cantidadFotos; i++) {
-        galeria.push(`${carpeta}/${i}.${formato}`);
+        galeria.push(`../${carpeta}/${i}.${formato}`);
       }
       
       // Ahora puedes usar el arreglo para cargar las imágenes
