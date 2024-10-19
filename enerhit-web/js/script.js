@@ -17,9 +17,6 @@ document.getElementById('allServices').addEventListener('click', () => {
 
 
 
-
-
-
 //llamamos a la funcion
 
 //el que esta en la parte de portafolio
@@ -27,7 +24,7 @@ fGaleria([],12,'galeria','galeria-portfolio','col-12 col-md-4 col-lg-3 p-1','300
 
 
 //main computadora
-fGaleria([],4,'main','galeria-main','col-6 col-md-4 col-lg-12 p-1','400px','jpg',true,'100%'); 
+fGaleria([],4,'main','galeria-main','col-12 col-md-4 col-lg-12 p-1','400px','jpg',true,'100%'); 
 
 
 //main responsive
@@ -38,12 +35,17 @@ fGaleria([],4,'clientes','galeria-clientes','col-12 col-md-4 col-lg-12 ','80px',
 
 
 
+
+
+
+
+
 //crea la galeria
 function fGaleria(galeria,cantidadFotos,carpeta,contenedor,clase,altura,formato,objectFit,Ancho){
 
     for (let i = 1; i <= cantidadFotos; i++) {
-        galeria.push(`${carpeta}/${i}.${formato}`);
-        const ruta=`../${carpeta}/${i}.${formato}`;
+        galeria.push(`../${carpeta}/${i}.${formato}`);
+        ruta=`${carpeta}/${i}.${formato}`
         console.log(ruta)
       }
       
