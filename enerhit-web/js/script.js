@@ -23,7 +23,7 @@ document.getElementById('allServices').addEventListener('click', () => {
 //llamamos a la funcion
 
 //el que esta en la parte de portafolio
-fGaleria([],12,'galeria','galeria-portfolio','col-6 col-md-4 col-lg-3 p-1','200px','jpg',true,'100%'); 
+fGaleria([],12,'galeria','galeria-portfolio','col-12 col-md-4 col-lg-3 p-1','300px','jpg',true,'100%'); 
 
 
 //main computadora
