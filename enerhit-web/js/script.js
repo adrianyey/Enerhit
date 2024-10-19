@@ -43,6 +43,8 @@ function fGaleria(galeria,cantidadFotos,carpeta,contenedor,clase,altura,formato,
 
     for (let i = 1; i <= cantidadFotos; i++) {
         galeria.push(`../${carpeta}/${i}.${formato}`);
+        const ruta=`../${carpeta}/${i}.${formato}`;
+        console.log(ruta)
       }
       
       // Ahora puedes usar el arreglo para cargar las imágenes
