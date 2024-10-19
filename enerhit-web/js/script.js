@@ -20,7 +20,7 @@ document.getElementById('allServices').addEventListener('click', () => {
 //llamamos a la funcion
 
 //el que esta en la parte de portafolio
-fGaleria([],12,'galeria','galeria-portfolio','col-12 col-md-4 col-lg-3 p-1','300px','jpg',true,'100%'); 
+fGaleria([],41,'galeria','galeria-portfolio','col-12 col-md-4 col-lg-6 p-1','300px','jpg',true,'100%'); 
 
 
 //main computadora
@@ -31,7 +31,7 @@ fGaleria([],4,'main','galeria-main','col-12 col-md-4 col-lg-12 p-1','400px','jpg
 fGaleria([],4,'main','galeria-main-responsive','col-12 col-md-4 col-lg-12 p-1','300px','jpg',true,'100%'); 
 
 //galeria clientes
-fGaleria([],11,'clientes','galeria-clientes','col-2 col-md-4 col-lg-2 ','50%','png',true,'50%'); 
+fGaleria([],11,'clientes','galeria-clientes','col-6 col-md-4 col-lg-2 ','50%','png',true,'50%'); 
 
 
 
