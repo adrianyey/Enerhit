@@ -31,7 +31,7 @@ fGaleria([],4,'main','galeria-main','col-12 col-md-4 col-lg-12 p-1','400px','jpg
 fGaleria([],4,'main','galeria-main-responsive','col-12 col-md-4 col-lg-12 p-1','300px','jpg',true,'100%'); 
 
 //galeria clientes
-fGaleria([],4,'clientes','galeria-clientes','col-12 col-md-4 col-lg-12 ','80px','png',false,'120px'); 
+fGaleria([],11,'clientes','galeria-clientes','col-2 col-md-4 col-lg-2 ','50%','png',true,'50%'); 
 
 
 
@@ -44,8 +44,9 @@ fGaleria([],4,'clientes','galeria-clientes','col-12 col-md-4 col-lg-12 ','80px',
 function fGaleria(galeria,cantidadFotos,carpeta,contenedor,clase,altura,formato,objectFit,Ancho){
 
     for (let i = 1; i <= cantidadFotos; i++) {
-        galeria.push(`${carpeta}/${i}.${formato}`);
-      
+        galeria.push(`../${carpeta}/${i}.${formato}`);
+        ruta=`${carpeta}/${i}.${formato}`
+        console.log(ruta)
       }
       
       // Ahora puedes usar el arreglo para cargar las imágenes
@@ -56,12 +57,12 @@ function fGaleria(galeria,cantidadFotos,carpeta,contenedor,clase,altura,formato,
         const img = document.createElement('img');
         img.src = imagen;
         img.alt = imagen;
-        img.className = 'img-fluid'; // Clase de Bootstrap para imágenes responsivas
+       // Clase de Bootstrap para imágenes responsivas
         img.style.width = Ancho; // Ancho fijo
         img.style.height = altura; // Alto fijo
         if(objectFit==true)
         {
-            img.style.objectFit = objectFit; // Asegura que la imagen cubra el área sin distorsionarse 
+        img.style.objectFit = objectFit; // Asegura que la imagen cubra el área sin distorsionarse 
         }else
         {
 
