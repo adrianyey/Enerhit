@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ener-Hit — Ingeniería que enciende resultados</title>
+  <meta name="description" content="Ingeniería eléctrica, HVAC, contra incendio, automatización y CCTV. 20+ años de experiencia en Sonora." />
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" crossorigin="anonymous"/>
+
+  <style>
+    /* ===== Design tokens ===== */
+    :root{
+      --ink:#0f172a; --ink-2:#334155; --muted:#64748b;
+      --brand:#2563eb; --brand-2:#60a5fa;
+      --line:rgba(59,130,246,.18);
+      --surface:#ffffff; --soft:#f8fafc;
+      --radius:16px;
+      --shadow-sm:0 6px 18px rgba(2,6,23,.06);
+      --shadow-md:0 12px 32px rgba(2,6,23,.10);
+      --shadow-lg:0 20px 48px rgba(2,6,23,.12);
+    }
+    [data-theme="dark"]{
+      --ink:#e6e8eb; --ink-2:#cbd5e1; --muted:#a6adbb;
+      --line:rgba(255,255,255,.10);
+      --surface:#111417; --soft:#0b0d10;
+      --shadow-sm:0 8px 26px rgba(0,0,0,.35);
+      --shadow-md:0 16px 40px rgba(0,0,0,.45);
+      --shadow-lg:0 30px 80px rgba(0,0,0,.55);
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--surface)}
+    img{max-width:100%;display:block}
+    a{text-decoration:none;color:inherit}
+    .container{width:min(1200px,92vw);margin-inline:auto}
+
+    /* ===== Loader ===== */
+    #loader{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:linear-gradient(180deg,var(--surface),color-mix(in oklab,var(--brand-2) 6%,var(--surface)));transition:opacity .4s,visibility .4s}
+    #loader.hide{opacity:0;visibility:hidden}
+    .loader-box{display:grid;place-items:center;gap:16px;padding:26px;border-radius:20px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow-lg)}
+    .loader-logo{width:84px;height:84px;border-radius:16px;object-fit:cover;border:1px solid var(--line)}
+    .ring{width:76px;height:76px;border-radius:999px;position:relative;background:conic-gradient(from 0deg,color-mix(in oklab,var(--brand) 60%,transparent),transparent 55%);animation:spin 1.1s linear infinite;filter:drop-shadow(0 2px 10px color-mix(in oklab,var(--brand) 30%, transparent))}
+    .ring::after{content:"";position:absolute;inset:8px;border-radius:inherit;background:var(--surface);border:1px solid var(--line)}
+    .loader-text{font-weight:700;color:var(--ink-2);letter-spacing:.2px}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    @media (prefers-reduced-motion:reduce){.ring{animation:none}}
+
+    /* ===== Header sin borde ===== */
+    header{position:sticky;top:0;z-index:40;backdrop-filter:blur(10px);background:color-mix(in oklab, var(--surface) 92%, transparent)}
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:12px 0;gap:14px}
+    .brand{display:flex;align-items:center;gap:14px;min-width:0}
+    .brand img{width:clamp(48px,7vw,72px);height:clamp(48px,7vw,72px);border-radius:16px;object-fit:cover;border:1px solid var(--line)}
+    .brand span{font-weight:800;letter-spacing:.3px;font-size:clamp(16px,2.4vw,22px);white-space:nowrap}
+    .links{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+    .links a{color:var(--ink-2);padding:8px 10px;border-radius:10px}
+    .links a:hover{background:color-mix(in oklab, var(--brand) 18%, transparent);color:#0b1324}
+    [data-theme="dark"] .links a:hover{color:#fff}
+    .toolbar{display:flex;gap:8px;align-items:center}
+
+    .toggle{display:inline-flex;align-items:center;justify-content:center;border-radius:12px;padding:8px;border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow-sm);cursor:pointer;min-width:40px;min-height:40px}
+    .toggle:hover{box-shadow:var(--shadow-md)}
+    .toggle svg,.toggle span.minilabel{width:18px;height:18px;display:block;color:var(--ink);font-weight:800}
+
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:10px 14px;border-radius:12px;font-weight:700;border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow-sm);transition:transform .15s,box-shadow .2s;white-space:nowrap}
+    .btn:hover{transform:translateY(-1px);box-shadow:var(--shadow-md)}
+    .btn-icon{width:40px;height:40px;padding:0}
+    .btn-accent{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;border-color:transparent;box-shadow:0 8px 26px color-mix(in oklab, var(--brand) 25%, transparent)}
+    .btn-ghost{color:var(--ink-2)}
+    .burger{display:none;border:1px solid var(--line);border-radius:10px;padding:8px 12px;color:var(--ink-2);background:var(--surface)}
+
+    @media (max-width:980px){
+      .brand span{display:none}
+      .links{display:none}
+      .burger{display:inline-flex}
+      .btn.textual{display:none}
+    }
+
+    #drawer{display:none;background:var(--surface)}
+    #drawer .container{padding:10px 0;display:grid;gap:10px}
+
+    /* ===== Hero + partículas ===== */
+    .hero{position:relative;isolation:isolate;min-height:70svh;display:grid;place-items:center;overflow:hidden;
+      background:
+        radial-gradient(1000px 400px at 20% -10%, color-mix(in oklab, var(--brand-2) 35%, transparent), transparent 60%),
+        radial-gradient(800px 360px at 80% -10%, color-mix(in oklab, var(--brand) 22%, transparent), transparent 60%),
+        linear-gradient(var(--surface), var(--surface));
+    }
+    [data-theme="dark"] .hero{
+      background:
+        radial-gradient(1000px 400px at 20% -10%, color-mix(in oklab, var(--brand-2) 20%, transparent), transparent 60%),
+        radial-gradient(800px 360px at 80% -10%, color-mix(in oklab, var(--brand) 16%, transparent), transparent 60%),
+        linear-gradient(var(--soft), var(--soft));
+    }
+    .hero-inner{padding:clamp(60px,8vw,86px) 0 56px;display:grid;gap:18px;justify-items:center;text-align:center;position:relative;z-index:1}
+    .eyebrow{display:inline-flex;gap:10px;align-items:center;padding:8px 12px;border-radius:999px;background:color-mix(in oklab, var(--brand) 12%, white);color:#1e40af;font-weight:700;border:1px solid var(--line)}
+    [data-theme="dark"] .eyebrow{color:#bfdbfe;background:color-mix(in oklab, var(--brand) 12%, black)}
+    .hero h1{font-size:clamp(32px,6vw,64px);line-height:1.06;margin:6px 0 4px;font-weight:800}
+    .slogan{font-size:clamp(15px,2.4vw,19px);color:var(--muted);max-width:860px}
+    .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px;justify-content:center}
+    .badges{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:6px}
+    .badge{padding:6px 10px;border-radius:999px;border:1px dashed var(--line);background:var(--surface);color:#1e3a8a;font-weight:600}
+    [data-theme="dark"] .badge{color:#cfe1ff}
+
+    .electric-bg{position:absolute;inset:0;pointer-events:none;z-index:0}
+    .sparks{position:absolute;inset:0;overflow:hidden}
+    .spark{position:absolute;width:2px;height:2px;border-radius:50%;background:color-mix(in oklab, var(--brand-2) 70%, white);box-shadow:0 0 10px color-mix(in oklab, var(--brand) 70%, transparent),0 0 20px color-mix(in oklab, var(--brand-2) 60%, transparent);opacity:.85;animation:sparkFloat linear infinite}
+    @keyframes sparkFloat{0%{transform:translateY(0) translateX(0)}100%{transform:translateY(-140px) translateX(60px);opacity:0}}
+    @media (prefers-reduced-motion:reduce){.spark{animation:none}}
+
+    /* ===== Sections / Grid / Cards ===== */
+    section{padding:64px 0}
+    .section-title{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+    .section-title h2{margin:0;font-size:clamp(20px,3.5vw,32px);font-weight:800}
+    .section-sub{color:var(--muted);margin:0 0 16px}
+
+    .grid{display:grid;gap:16px}
+    .grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+    .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    @media (max-width:980px){.grid-4{grid-template-columns:repeat(2,1fr)}.grid-3{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:560px){.grid-4,.grid-3,.grid-2{grid-template-columns:1fr}}
+
+    .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow-sm);padding:18px;transition:transform .18s,box-shadow .18s}
+    .card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md)}
+    .card-head{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+    .icon{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;background:color-mix(in oklab, var(--brand-2) 20%, white);color:#1e40af;border:1px solid color-mix(in oklab, var(--brand) 30%, transparent)}
+    [data-theme="dark"] .icon{background:color-mix(in oklab, var(--brand-2) 15%, black);color:#93c5fd}
+
+    /* ===== Proyectos / Galería ===== */
+    .proj{overflow:hidden;border-radius:18px;border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow-sm)}
+    .proj img{aspect-ratio:4/3;object-fit:cover;width:100%;transition:transform .4s ease}
+    .proj:hover img{transform:scale(1.04)}
+    .proj-body{padding:14px}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:color-mix(in oklab, var(--brand) 12%, white);border:1px solid var(--line);color:#1e40af;font-weight:700;font-size:.9rem}
+    [data-theme="dark"] .pill{background:color-mix(in oklab, var(--brand) 12%, black);color:#bfdbfe}
+
+    .scroller{position:relative;border-radius:18px;background:linear-gradient(180deg,var(--surface),color-mix(in oklab, var(--brand-2) 6%, var(--surface)));border:1px solid var(--line);padding:16px;box-shadow:var(--shadow-sm)}
+    .scroller-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:10px;flex-wrap:wrap}
+    .scroller-inner{display:flex;gap:16px;overflow:auto;scroll-snap-type:x mandatory;padding-bottom:4px}
+    .scroller-inner::-webkit-scrollbar{height:8px}
+    .scroller-inner::-webkit-scrollbar-thumb{background:color-mix(in oklab, var(--brand-2) 35%, var(--surface));border-radius:999px}
+    .tile{scroll-snap-align:center;border-radius:14px;overflow:hidden;border:1px solid var(--line);flex:0 0 320px;position:relative;cursor:pointer;background:var(--surface)}
+    .tile img{width:100%;height:220px;object-fit:cover;transition:transform .35s ease}
+    .tile:hover img{transform:scale(1.05)}
+    .navbtn{position:absolute;top:50%;transform:translateY(-50%);width:42px;height:42px;border-radius:999px;background:var(--surface);border:1px solid var(--line);display:grid;place-items:center;color:#1e40af;cursor:pointer;box-shadow:var(--shadow-sm)}
+    [data-theme="dark"] .navbtn{color:#cfe1ff}
+    .navbtn:hover{box-shadow:var(--shadow-md)}
+    .prev{left:8px}.next{right:8px}
+
+    /* ===== Clientes ===== */
+    .client-section{background:var(--soft)}
+    .logo-strip{background:var(--surface);border:1px dashed var(--line);border-radius:16px;position:relative;overflow:hidden;padding:0;box-shadow:var(--shadow-sm)}
+    .logo-track{display:flex;gap:40px;align-items:center;animation:scrollX 40s linear infinite;padding:20px}
+    .logo-strip:hover .logo-track{animation-play-state:paused}
+    @keyframes scrollX{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+    .logo-tile{display:grid;place-items:center;height:72px;min-width:140px;filter:grayscale(100%);transition:filter .3s ease}
+    .logo-tile:hover{filter:grayscale(0%)}
+
+    /* ===== About (ajustado) ===== */
+    .about-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:20px;align-items:center}
+    @media (max-width:980px){.about-grid{grid-template-columns:1fr}}
+    .chips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 2px}
+    .chip{border:1px solid var(--line);padding:6px 10px;border-radius:999px;font-weight:600;background:var(--surface)}
+    .checks{display:grid;gap:8px;margin-top:12px}
+    .check{display:flex;align-items:flex-start;gap:10px}
+    .check i{color:#16a34a;margin-top:2px}
+    [data-theme="dark"] .check i{color:#86efac}
+    .metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+    .metric{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center;box-shadow:var(--shadow-sm)}
+    .metric .big{font-size:20px;font-weight:800;color:#1e40af}
+    [data-theme="dark"] .metric .big{color:#bfdbfe}
+
+    /* Polaroid corregida: proporciones y márgenes */
+    .polaroid{position:relative;display:grid;gap:12px;max-width:520px;justify-self:center}
+    .polaroid .main-img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:14px;border:1px solid var(--line);box-shadow:var(--shadow-md)}
+    .polaroid .small{position:absolute;right:-6%;bottom:-10%;width:44%;aspect-ratio:4/3;object-fit:cover;border-radius:12px;border:1px solid var(--line);box-shadow:var(--shadow-lg);transform:rotate(6deg)}
+    @media (max-width:680px){.polaroid{max-width:100%}.polaroid .small{position:static;width:100%;transform:none}}
+
+    /* ===== Timeline ===== */
+    .timeline{position:relative;margin-top:10px}
+    .timeline::before{content:"";position:absolute;left:14px;top:0;bottom:0;width:2px;background:color-mix(in oklab,var(--brand) 30%, transparent);border-radius:2px}
+    .t-item{position:relative;padding-left:42px;margin:16px 0}
+    .t-bullet{position:absolute;left:6px;top:2px;width:16px;height:16px;border-radius:999px;background:var(--surface);border:2px solid var(--brand);box-shadow:0 0 0 4px color-mix(in oklab,var(--brand-2) 12%, transparent)}
+    .t-title{font-weight:800}
+    .t-sub{color:var(--muted);margin-top:4px}
+
+    /* ===== Testimonios ===== */
+    .testi{position:relative;border-radius:18px;background:linear-gradient(180deg,var(--surface),color-mix(in oklab,var(--brand-2) 6%, var(--surface)));border:1px solid var(--line);padding:16px;box-shadow:var(--shadow-sm)}
+    .testi-track{display:flex;gap:16px;overflow:auto;scroll-snap-type:x mandatory}
+    .testi-card{scroll-snap-align:center;flex:0 0 360px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--shadow-sm)}
+    .stars{color:#f59e0b;margin-bottom:8px}
+    .testi-nav{position:absolute;top:50%;transform:translateY(-50%);width:42px;height:42px;border-radius:999px;background:var(--surface);border:1px solid var(--line);display:grid;place-items:center;color:#1e40af;cursor:pointer;box-shadow:var(--shadow-sm)}
+    .testi-prev{left:8px}.testi-next{right:8px}
+
+    /* ===== Contacto ===== */
+    .contact-grid{display:grid;gap:16px;grid-template-columns:1.3fr .7fr}
+    @media (max-width:900px){.contact-grid{grid-template-columns:1fr}}
+    .input{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+    textarea.input{resize:vertical}
+
+    footer{padding:28px 0;color:var(--muted)}
+    .reveal{opacity:0;transform:translateY(10px);transition:opacity .5s,transform .5s}
+    .reveal.show{opacity:1;transform:none}
+  </style>
+</head>
+<body>
+  <!-- LOADER -->
+  <div id="loader" aria-live="polite" aria-busy="true">
+    <div class="loader-box" role="status" aria-label="Cargando sitio">
+      <img class="loader-logo" src="./media/logo.jpg" alt="Logo Ener-Hit" />
+      <div class="ring" aria-hidden="true"></div>
+      <div class="loader-text">Cargando…</div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header id="siteHeader">
+    <div class="container nav">
+      <a class="brand" href="#top" aria-label="Inicio">
+        <img src="./media/logo.jpg" alt="Logo Ener-Hit" />
+        <span>ENER-HIT</span>
+      </a>
+
+      <nav class="links" aria-label="Menú principal">
+        <a href="#about" data-i18n="nav_about">Sobre nosotros</a>
+        <a href="#services" data-i18n="nav_services">Servicios</a>
+        <a href="#portfolio" data-i18n="nav_projects">Proyectos</a>
+        <a href="#gallery" data-i18n="nav_gallery">Galería</a>
+        <a href="#contact" data-i18n="nav_contact">Contacto</a>
+      </nav>
+
+      <div class="toolbar">
+        <!-- Idioma minimal -->
+        <button id="langToggle" class="toggle lang" aria-label="Cambiar idioma">
+          <span class="minilabel" id="langMini">ES</span>
+        </button>
+        <!-- Tema minimal -->
+        <button id="themeToggle" class="toggle theme" aria-label="Cambiar tema">
+          <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+          </svg>
+        </button>
+
+        <!-- Botones con texto (ocultos en móvil) -->
+        <a class="btn btn-ghost textual" href="./media/curriculum.pdf" download><i class="fa fa-file"></i> <span>CV</span></a>
+        <a class="btn btn-accent textual" href="https://wa.link/82t5u8" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> <span>Cotizar</span></a>
+
+        <!-- Íconos-only -->
+        <a class="btn btn-ghost btn-icon" href="./media/curriculum.pdf" download aria-label="Descargar CV"><i class="fa fa-file"></i></a>
+        <a class="btn btn-accent btn-icon" href="https://wa.link/82t5u8" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+
+        <button class="burger" id="burger" aria-label="Abrir menú"><i class="fa fa-bars"></i></button>
+      </div>
+    </div>
+  </header>
+  <div id="drawer">
+    <div class="container">
+      <a href="#about" data-i18n="nav_about">Sobre nosotros</a>
+      <a href="#services" data-i18n="nav_services">Servicios</a>
+      <a href="#portfolio" data-i18n="nav_projects">Proyectos</a>
+      <a href="#gallery" data-i18n="nav_gallery">Galería</a>
+      <a href="#contact" data-i18n="nav_contact">Contacto</a>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero" id="top">
+    <div class="electric-bg" aria-hidden="true"><div class="sparks" id="sparks"></div></div>
+    <div class="container hero-inner">
+      <span class="eyebrow"><i class="fa fa-bolt"></i> <span data-i18n="eyebrow">Ingeniería que enciende resultados</span></span>
+      <h1 data-i18n="hero_title">Llevamos la energía a tus manos</h1>
+      <p class="slogan" data-i18n="hero_sub">
+        Realizamos una amplia variedad de trabajos con los más altos estándares del mercado. Contamos con más de 20 años de experiencia, respaldados por grandes empresas y clientes satisfechos que avalan nuestra calidad.
+      </p>
+
+      <!-- Clientes -->
+      <div class="container" style="margin-top:6px">
+        <div class="logo-strip">
+          <div class="logo-track" id="client-track">
+            <div id="galeria-clientes" style="display:flex;gap:40px;align-items:center"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cta">
+        <a class="btn btn-accent" href="#services"><i class="fa fa-tools"></i> <span data-i18n="cta_services">Ver servicios</span></a>
+        <a class="btn" href="https://wa.link/82t5u8" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> <span data-i18n="cta_whatsapp">Cotizar rápido</span></a>
+      </div>
+      <div class="badges">
+        <span class="badge" data-i18n="badge_power">Alta y baja tensión</span>
+        <span class="badge" data-i18n="badge_substations">Subestaciones</span>
+        <span class="badge" data-i18n="badge_hvac">HVAC</span>
+        <span class="badge" data-i18n="badge_fire">Contra incendio</span>
+        <span class="badge" data-i18n="badge_automation">Automatización</span>
+        <span class="badge" data-i18n="badge_cctv">CCTV</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="container">
+      <div class="section-title"><span class="icon"><i class="fa fa-user"></i></span><h2 data-i18n="about_title">Sobre nosotros</h2></div>
+      <div class="about-grid">
+        <!-- Texto -->
+        <div class="card reveal">
+          <p class="section-sub" style="margin-top:0" data-i18n="about_text">
+            Somos Multiservicios Industriales Ener-Hit, una empresa comprometida con los más altos estándares de calidad. Entregamos soluciones de ingeniería de extremo a extremo, con seguridad y cumplimiento normativo como prioridad.
+          </p>
+          <div class="chips">
+            <span class="chip">NOM-001-SEDE</span>
+            <span class="chip">NOM-002-STPS</span>
+            <span class="chip">CFE Interconexión</span>
+            <span class="chip">PLC / SCADA</span>
+          </div>
+          <div class="checks">
+            <div class="check"><i class="fa fa-check-circle"></i><span>Proyectos llave en mano: diseño, suministro, instalación y puesta en marcha.</span></div>
+            <div class="check"><i class="fa fa-check-circle"></i><span>Planes de mantenimiento preventivo, predictivo y correctivo.</span></div>
+            <div class="check"><i class="fa fa-check-circle"></i><span>Enfoque en ahorro energético y continuidad operativa.</span></div>
+          </div>
+          <div class="metrics">
+            <div class="metric"><div class="big">20+ años</div><div class="section-sub">Experiencia</div></div>
+            <div class="metric"><div class="big">1000+</div><div class="section-sub">Instalaciones</div></div>
+            <div class="metric"><div class="big">100%</div><div class="section-sub">Cumplimiento</div></div>
+          </div>
+
+          <!-- Timeline -->
+          <div class="timeline" style="margin-top:18px">
+            <div class="t-item">
+              <div class="t-bullet"></div>
+              <div class="t-title" data-i18n="tl_2004">2004 · Fundación Ener-Hit</div>
+              <div class="t-sub" data-i18n="tl_2004_sub">Servicios eléctricos residenciales y comerciales.</div>
+            </div>
+            <div class="t-item">
+              <div class="t-bullet"></div>
+              <div class="t-title" data-i18n="tl_2012">2012 · Expansión a industrial</div>
+              <div class="t-sub" data-i18n="tl_2012_sub">Subestaciones, media tensión y automatización.</div>
+            </div>
+            <div class="t-item">
+              <div class="t-bullet"></div>
+              <div class="t-title" data-i18n="tl_2018">2018 · Integración HVAC y contra incendio</div>
+              <div class="t-sub" data-i18n="tl_2018_sub">Soluciones llave en mano multi-disciplina.</div>
+            </div>
+            <div class="t-item">
+              <div class="t-bullet"></div>
+              <div class="t-title" data-i18n="tl_2024">2024 · 1000+ proyectos entregados</div>
+              <div class="t-sub" data-i18n="tl_2024_sub">Continuidad operativa y ahorro energético.</div>
+            </div>
+          </div>
+        </div>
+        <!-- Visual -->
+        <div class="polaroid reveal">
+          <img class="main-img" src="./media/24.jpg" alt="Trabajo eléctrico" />
+          <img class="small" src="./media/40.jpg" alt="Sistema contra incendio" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services">
+    <div class="container">
+      <div class="section-title"><span class="icon"><i class="fa fa-tools"></i></span><h2 data-i18n="services_title">Servicios</h2></div>
+      <p class="section-sub" data-i18n="services_sub">Ofrecemos una amplia variedad de servicios. A continuación, algunas de nuestras especialidades:</p>
+      <div class="grid grid-4">
+        <article class="card reveal"><div class="card-head"><span class="icon"><i class="fa fa-snowflake"></i></span><h3 data-i18n="svc_ac_title" style="margin:0">Aire acondicionado</h3></div><p data-i18n="svc_ac_desc">Venta, instalación y mantenimiento.</p></article>
+        <article class="card reveal"><div class="card-head"><span class="icon"><i class="fa fa-solar-panel"></i></span><h3 data-i18n="svc_solar_title" style="margin:0">Paneles solares</h3></div><p data-i18n="svc_solar_desc">Instalación y mantenimiento.</p></article>
+        <article class="card reveal"><div class="card-head"><span class="icon"><i class="fa fa-industry"></i></span><h3 data-i18n="svc_substations_title" style="margin:0">Subestaciones eléctricas</h3></div><p data-i18n="svc_substations_desc">Instalación y mantenimiento.</p></article>
+        <article class="card reveal"><div class="card-head"><span class="icon"><i class="fa fa-plug"></i></span><h3 data-i18n="svc_lowv_title" style="margin:0">Baja tensión</h3></div><p data-i18n="svc_lowv_desc">Instalación y mantenimiento.</p></article>
+      </div>
+
+      <details class="card reveal" style="margin-top:18px">
+        <summary style="cursor:pointer;font-weight:800" data-i18n="svc_full_list">Ver lista completa de servicios</summary>
+        <div style="margin-top:12px">
+          <!-- Tu lista detallada opcional -->
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- PROJECTS + GALLERY -->
+  <section id="portfolio">
+    <div class="container">
+      <div class="section-title"><span class="icon"><i class="fa fa-folder"></i></span><h2 data-i18n="projects_title">Proyectos</h2></div>
+      <p class="section-sub" data-i18n="projects_sub">Estos son algunos de nuestros proyectos más destacados:</p>
+
+      <div class="grid grid-3">
+        <article class="proj reveal">
+          <img src="./media/40.jpg" alt="Mexicana De Cobre y LFV"/>
+          <div class="proj-body">
+            <h3 style="margin:0 0 6px">Mexicana De Cobre y LFV</h3>
+            <p class="section-sub" data-i18n="p1_desc">Instalación de sistema contraincendio</p>
+            <span class="pill" data-i18n="p1_kpi"><i class="fa fa-check"></i> Hidrantes + Bomba</span>
+          </div>
+        </article>
+        <article class="proj reveal">
+          <img src="./media/panel.jpg" alt="Paneles en casa habitación"/>
+          <div class="proj-body">
+            <h3 style="margin:0 0 6px" data-i18n="p2_title">Paneles en casa habitación</h3>
+            <p class="section-sub" data-i18n="p2_desc">Suministro e instalación de paneles solares/micro inversores con generación de 3.2 kWh; total 16 kWh/día</p>
+            <span class="pill" data-i18n="p2_kpi"><i class="fa fa-sun"></i> −70% CFE</span>
+          </div>
+        </article>
+        <article class="proj reveal">
+          <img src="./media/24.jpg" alt="Altos Avanza SEDATU"/>
+          <div class="proj-body">
+            <h3 style="margin:0 0 6px">Altos Avanza SEDATU</h3>
+            <p class="section-sub" data-i18n="p3_desc">Instalacion de Subestación eléctrica Subterránea de 75 kVA en Unidad deportiva</p>
+            <span class="pill" data-i18n="p3_kpi"><i class="fa fa-bolt"></i> Puesta en marcha</span>
+          </div>
+        </article>
+        <article class="proj reveal">
+          <img src="./media/28.jpg" alt="COADESA"/>
+          <div class="proj-body">
+            <h3 style="margin:0 0 6px">COADESA</h3>
+            <p class="section-sub" data-i18n="p4_desc">Instalación de Subestación eléctrica de 37.5 kVA en campo Futbol colonia minera</p>
+            <span class="pill" data-i18n="p4_kpi"><i class="fa fa-industry"></i> Obra eléctrica</span>
+          </div>
+        </article>
+        <article class="proj reveal">
+          <img src="./media/15.jpg" alt="Beters"/>
+          <div class="proj-body">
+            <h3 style="margin:0 0 6px">Beters</h3>
+            <p class="section-sub" data-i18n="p5_desc">Instalación de Subestación eléctrica de 500 kVA en planta de C.W.C</p>
+            <span class="pill" data-i18n="p5_kpi"><i class="fa fa-industry"></i> Alta capacidad</span>
+          </div>
+        </article>
+        <article class="card reveal" style="display:grid;place-items:center;text-align:center">
+          <div>
+            <h3 style="margin:0 0 8px"><i class="fa fa-file"></i> <span data-i18n="cv_title">Currículum</span></h3>
+            <p class="section-sub" style="margin:0 0 12px" data-i18n="cv_desc">Descarga el detalle completo de nuestros trabajos.</p>
+            <a class="btn btn-accent" href="./media/curriculum.pdf" download><i class="fa fa-download"></i> <span data-i18n="cv_btn">Descargar PDF</span></a>
+          </div>
+        </article>
+      </div>
+
+      <!-- Galería -->
+      <h3 id="gallery" style="margin-top:24px" data-i18n="gallery_title">Galería</h3>
+      <div class="scroller reveal">
+        <div class="scroller-toolbar">
+          <div style="opacity:.7;font-weight:600"><span data-i18n="gallery_hint">Desliza para ver más</span> ↔</div>
+        </div>
+        <button class="navbtn prev" data-target="#galeria-portfolio" aria-label="Anterior"><i class="fa fa-chevron-left"></i></button>
+        <div id="galeria-portfolio" class="scroller-inner"></div>
+        <button class="navbtn next" data-target="#galeria-portfolio" aria-label="Siguiente"><i class="fa fa-chevron-right"></i></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIOS -->
+  <section id="testimonials">
+    <div class="container">
+      <div class="section-title"><span class="icon"><i class="fa fa-comment-dots"></i></span><h2 data-i18n="testi_title">Testimonios</h2></div>
+      <p class="section-sub" data-i18n="testi_sub">Lo que nuestros clientes dicen sobre nosotros.</p>
+      <div class="testi reveal">
+        <button class="testi-nav testi-prev" aria-label="Anterior">←</button>
+        <div class="testi-track" id="testiTrack">
+          <article class="testi-card">
+            <div class="stars">★★★★★</div>
+            <p data-i18n="t1_txt">“Excelente ejecución y cumplimiento de tiempos. La planta no se detuvo ni un día.”</p>
+            <strong>LFV</strong><br/>
+            <small class="section-sub" data-i18n="t1_role">Gerencia de Mantenimiento</small>
+          </article>
+          <article class="testi-card">
+            <div class="stars">★★★★★</div>
+            <p data-i18n="t2_txt">“Su propuesta integró eléctrica + HVAC + contra incendio. Ahorro real en CFE.”</p>
+            <strong>Mexicana de Cobre</strong><br/>
+            <small class="section-sub" data-i18n="t2_role">Ingeniería de Proyectos</small>
+          </article>
+          <article class="testi-card">
+            <div class="stars">★★★★★</div>
+            <p data-i18n="t3_txt">“Respuesta rápida y soporte post-venta de primera.”</p>
+            <strong>COADESA</strong><br/>
+            <small class="section-sub" data-i18n="t3_role">Operaciones</small>
+          </article>
+        </div>
+        <button class="testi-nav testi-next" aria-label="Siguiente">→</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="container">
+      <div class="section-title"><span class="icon"><i class="fa fa-comments"></i></span><h2 data-i18n="contact_title">Contáctanos</h2></div>
+      <p class="section-sub" style="margin-top:0" data-i18n="contact_sub"><i class="fa fa-caret-right"></i> Ponte en contacto con nosotros para recibir atención personalizada.</p>
+      <div class="contact-grid">
+        <div class="card reveal">
+          <div style="display:grid;gap:8px;margin:10px 0;color:var(--ink-2)">
+            <div><i class="fa fa-map-marker-alt"></i> <span data-i18n="loc_ap">Agua Prieta, Sonora</span></div>
+            <div><i class="fa fa-map-marker-alt"></i> <span data-i18n="loc_her">Hermosillo, Sonora</span></div>
+            <div><i class="fa fa-phone"></i> 633-129-1258</div>
+            <div><i class="fa fa-phone"></i> 662-100-8443</div>
+            <div><i class="fa fa-envelope"></i> ventas@enerhit.com</div>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <a class="btn btn-accent" href="https://wa.link/82t5u8" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> <span data-i18n="cta_wh_her">Hermosillo</span></a>
+            <a class="btn" href="https://wa.me/526331291258?text=Buen%20d%C3%ADa,%20me%20gustar%C3%ADa%20cotizar%20un%20proyecto." target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> <span data-i18n="cta_wh_ap">Agua Prieta</span></a>
+          </div>
+        </div>
+        <form class="card reveal" action="https://formspree.io/f/mwkazjkj" method="POST" onsubmit="this.querySelector('button').disabled=true">
+          <div class="grid grid-2">
+            <input class="input" name="nombre" placeholder="Nombre" required data-i18n-placeholder="form_name"/>
+            <input class="input" name="email" type="email" placeholder="Email" required data-i18n-placeholder="form_email"/>
+          </div>
+          <input class="input" name="telefono" placeholder="Teléfono (opcional)" style="margin-top:10px" data-i18n-placeholder="form_phone"/>
+          <textarea class="input" name="mensaje" rows="4" placeholder="Cuéntanos de tu proyecto…" style="margin-top:10px" required data-i18n-placeholder="form_msg"></textarea>
+          <button class="btn btn-accent" type="submit" style="margin-top:12px;width:100%"><i class="fa fa-paper-plane"></i> <span data-i18n="form_send">Enviar</span></button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container" style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
+      <span>© <span id="y"></span> Ener-Hit. <span data-i18n="rights">Todos los derechos reservados.</span></span>
+      <span class="section-sub" data-i18n="made_in">Hecho en Sonora, MX.</span>
+    </div>
+  </footer>
+
+  <!-- Lightbox -->
+  <div id="lightbox" style="position:fixed;inset:0;background:rgba(3,6,12,.85);display:none;place-items:center;z-index:100">
+    <button class="lightbox-close" aria-label="Cerrar" style="position:absolute;top:18px;right:18px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:12px;padding:10px 14px;cursor:pointer">✕</button>
+    <button class="lightbox-prev" aria-label="Anterior" style="position:absolute;left:18px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:12px;padding:10px 14px;cursor:pointer">←</button>
+    <button class="lightbox-next" aria-label="Siguiente" style="position:absolute;right:18px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:12px;padding:10px 14px;cursor:pointer">→</button>
+    <img class="lightbox-img" alt="" style="max-width:min(92vw,1100px);max-height:86vh;border-radius:16px;box-shadow:var(--shadow-lg);border:1px solid rgba(255,255,255,.14)"/>
+  </div>
+
+  <script>
+    /* ===== Loader ===== */
+    const loader=document.getElementById('loader');
+    const hideLoader=()=>{loader?.classList.add('hide');setTimeout(()=>loader?.remove(),450);};
+    if(document.readyState==='complete') hideLoader(); else window.addEventListener('load', hideLoader);
+
+    /* ===== Persistencia ===== */
+    const $html=document.documentElement;
+    const savedTheme=localStorage.getItem('theme'); const savedLang=localStorage.getItem('lang');
+    if(savedTheme)$html.setAttribute('data-theme',savedTheme);
+    if(savedLang)document.documentElement.lang=savedLang;
+    document.getElementById('y').textContent=new Date().getFullYear();
+
+    /* ===== Drawer móvil ===== */
+    const burger=document.getElementById('burger'); const drawer=document.getElementById('drawer');
+    burger?.addEventListener('click',()=>drawer.style.display=drawer.style.display==='block'?'none':'block');
+    drawer.querySelectorAll('a')?.forEach(a=>a.addEventListener('click',()=>drawer.style.display='none'));
+
+    /* ===== Reveal ===== */
+    const io=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('show');io.unobserve(x.target);}}),{threshold:.12});
+    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+    /* ===== Galería ===== */
+    function fillStrip(containerId,count,folder,ext='jpg',height=220){
+      const wrap=document.getElementById(containerId); if(!wrap) return;
+      for(let i=1;i<=count;i++){
+        const tile=document.createElement('div'); tile.className='tile';
+        const img=document.createElement('img'); img.loading='lazy'; img.decoding='async';
+        img.src=`${folder}/${i}.${ext}`; img.alt=`${folder}-${i}`; img.style.height=height+'px';
+        tile.appendChild(img); wrap.appendChild(tile);
+      }
+    }
+    fillStrip('galeria-portfolio',41,'./galeria','jpg',220);
+    document.querySelectorAll('.navbtn').forEach(btn=>{
+      const inner=document.querySelector(btn.getAttribute('data-target')); if(!inner)return;
+      btn.addEventListener('click',()=>inner.scrollBy({left:(btn.classList.contains('prev')?-1:1)*360,behavior:'smooth'}));
+    });
+
+    /* ===== Clientes ===== */
+    (function fillClients(){
+      const list=document.getElementById('galeria-clientes'); if(!list) return;
+      for(let i=1;i<=11;i++){
+        const tile=document.createElement('div'); tile.className='logo-tile';
+        const img=document.createElement('img'); img.loading='lazy'; img.src=`./clientes/${i}.png`; img.alt=`Cliente ${i}`; img.style.maxHeight='56px';
+        tile.appendChild(img); list.appendChild(tile);
+      }
+      const track=document.getElementById('client-track');
+      const clone=list.cloneNode(true); clone.id='galeria-clientes-clone'; track.appendChild(clone);
+    })();
+
+    /* ===== Lightbox con navegación ===== */
+    (function lightbox(){
+      const overlay=document.getElementById('lightbox');
+      const imgEl=overlay.querySelector('.lightbox-img');
+      const btnClose=overlay.querySelector('.lightbox-close');
+      const btnPrev=overlay.querySelector('.lightbox-prev');
+      const btnNext=overlay.querySelector('.lightbox-next');
+
+      let images=[]; let index=0;
+
+      function openAt(i){
+        if(!images.length) return;
+        index=(i+images.length)%images.length;
+        imgEl.src=images[index].src;
+        overlay.style.display='grid';
+      }
+      function close(){overlay.style.display='none';}
+      function prev(){openAt(index-1);}
+      function next(){openAt(index+1);}
+
+      btnClose.addEventListener('click',close);
+      btnPrev.addEventListener('click',prev);
+      btnNext.addEventListener('click',next);
+      overlay.addEventListener('click',e=>{if(e.target===overlay) close();});
+      window.addEventListener('keydown',e=>{
+        if(overlay.style.display!=='grid') return;
+        if(e.key==='Escape') close();
+        if(e.key==='ArrowLeft') prev();
+        if(e.key==='ArrowRight') next();
+      });
+
+      function bind(selector){
+        document.querySelectorAll(selector).forEach(el=>{
+          el.style.cursor='zoom-in';
+          el.addEventListener('click',()=>{
+            images=Array.from(document.querySelectorAll(selector));
+            openAt(images.indexOf(el));
+          });
+        });
+      }
+      bind('.tile img'); bind('.proj img');
+    })();
+
+    /* ===== Partículas ===== */
+    (function makeSparks(){
+      const wrap=document.getElementById('sparks'); if(!wrap) return;
+      const SPARKS=24,D_MIN=1800,D_MAX=4200;
+      const rand=(a,b)=>Math.random()*(b-a)+a;
+      function resetSpark(el,initial=false){
+        const w=wrap.clientWidth||window.innerWidth;
+        const h=wrap.clientHeight||420;
+        const x=rand(0,w), y=h-rand(20,280), size=rand(1.5,3.5), dur=rand(D_MIN,D_MAX);
+        el.style.left=`${x}px`; el.style.top=`${y}px`; el.style.width=`${size}px`; el.style.height=`${size}px`; el.style.animationDuration=`${dur}ms`;
+        if(!initial){ el.remove(); wrap.appendChild(el); }
+        setTimeout(()=>resetSpark(el),dur);
+      }
+      for(let i=0;i<SPARKS;i++){const s=document.createElement('div');s.className='spark';resetSpark(s,true);wrap.appendChild(s);}
+      let t; window.addEventListener('resize',()=>{clearTimeout(t);t=setTimeout(()=>wrap.querySelectorAll('.spark').forEach(s=>resetSpark(s,true)),200);});
+    })();
+
+    /* ===== Theme toggle ===== */
+    const themeToggle=document.getElementById('themeToggle');
+    const themeIcon=document.getElementById('themeIcon');
+    function setIcon(isDark){
+      if(isDark){themeIcon.innerHTML='<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';}
+      else{themeIcon.innerHTML='<circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>';}
+    }
+    setIcon(($html.getAttribute('data-theme')==='dark'));
+    themeToggle?.addEventListener('click',()=>{const next=$html.getAttribute('data-theme')==='light'?'dark':'light';$html.setAttribute('data-theme',next);localStorage.setItem('theme',next);setIcon(next==='dark');});
+
+    /* ===== I18N ===== */
+    const i18n={
+      es:{nav_about:"Sobre nosotros",nav_services:"Servicios",nav_projects:"Proyectos",nav_gallery:"Galería",nav_contact:"Contacto",btn_cv:"CV",btn_quote:"Cotizar",eyebrow:"Ingeniería que enciende resultados",hero_title:"Llevamos la energía a tus manos",hero_sub:"Realizamos una amplia variedad de trabajos con los más altos estándares del mercado. Contamos con más de 20 años de experiencia, respaldados por grandes empresas y clientes satisfechos que avalan nuestra calidad.",cta_services:"Ver servicios",cta_whatsapp:"Cotizar rápido",badge_power:"Alta y baja tensión",badge_substations:"Subestaciones",badge_hvac:"HVAC",badge_fire:"Contra incendio",badge_automation:"Automatización",badge_cctv:"CCTV",about_title:"Sobre nosotros",about_text:"Somos Multiservicios Industriales Ener-Hit, una empresa comprometida con los más altos estándares de calidad. Entregamos soluciones de ingeniería de extremo a extremo, con seguridad y cumplimiento normativo como prioridad.",services_title:"Servicios",services_sub:"Ofrecemos una amplia variedad de servicios. A continuación, algunas de nuestras especialidades:",svc_ac_title:"Aire acondicionado",svc_ac_desc:"Venta, instalación y mantenimiento.",svc_solar_title:"Paneles solares",svc_solar_desc:"Instalación y mantenimiento.",svc_substations_title:"Subestaciones eléctricas",svc_substations_desc:"Instalación y mantenimiento.",svc_lowv_title:"Baja tensión",svc_lowv_desc:"Instalación y mantenimiento.",svc_full_list:"Ver lista completa de servicios",projects_title:"Proyectos",projects_sub:"Estos son algunos de nuestros proyectos más destacados:",p1_desc:"Instalación de sistema contraincendio",p1_kpi:"Hidrantes + Bomba",p2_title:"Paneles en casa habitación",p2_desc:"Suministro e instalación de paneles solares/micro inversores con generación de 3.2 kWh; total 16 kWh/día",p2_kpi:"−70% CFE",p3_desc:"Instalacion de Subestación eléctrica Subterránea de 75 kVA en Unidad deportiva",p3_kpi:"Puesta en marcha",p4_desc:"Instalación de Subestación eléctrica de 37.5 kVA en campo Futbol colonia minera",p4_kpi:"Obra eléctrica",p5_desc:"Instalación de Subestación eléctrica de 500 kVA en planta de C.W.C",p5_kpi:"Alta capacidad",cv_title:"Currículum",cv_desc:"Descarga el detalle completo de nuestros trabajos.",cv_btn:"Descargar PDF",gallery_title:"Galería",gallery_hint:"Desliza para ver más",clients_title:"Clientes",contact_title:"Contáctanos",contact_sub:"Ponte en contacto con nosotros para recibir atención personalizada.",loc_ap:"Agua Prieta, Sonora",loc_her:"Hermosillo, Sonora",cta_wh_her:"Hermosillo",cta_wh_ap:"Agua Prieta",form_name:"Nombre",form_email:"Email",form_phone:"Teléfono (opcional)",form_msg:"Cuéntanos de tu proyecto…",form_send:"Enviar",rights:"Todos los derechos reservados.",made_in:"Hecho en Sonora, MX.",testi_title:"Testimonios",testi_sub:"Lo que nuestros clientes dicen sobre nosotros.",t1_txt:"“Excelente ejecución y cumplimiento de tiempos. La planta no se detuvo ni un día.”",t1_role:"Gerencia de Mantenimiento",t2_txt:"“Su propuesta integró eléctrica + HVAC + contra incendio. Ahorro real en CFE.”",t2_role:"Ingeniería de Proyectos",t3_txt:"“Respuesta rápida y soporte post-venta de primera.”",t3_role:"Operaciones",tl_2004:"2004 · Fundación Ener-Hit",tl_2004_sub:"Servicios eléctricos residenciales y comerciales.",tl_2012:"2012 · Expansión a industrial",tl_2012_sub:"Subestaciones, media tensión y automatización.",tl_2018:"2018 · Integración HVAC y contra incendio",tl_2018_sub:"Soluciones llave en mano multi-disciplina.",tl_2024:"2024 · 1000+ proyectos entregados",tl_2024_sub:"Continuidad operativa y ahorro energético."},
+      en:{nav_about:"About",nav_services:"Services",nav_projects:"Projects",nav_gallery:"Gallery",nav_contact:"Contact",btn_cv:"Resume",btn_quote:"Get Quote",eyebrow:"Engineering that powers results",hero_title:"We bring energy to your hands",hero_sub:"We carry out a wide variety of projects to the highest standards. 20+ years of experience, backed by major companies and satisfied clients who vouch for our quality.",cta_services:"View services",cta_whatsapp:"Quick quote",badge_power:"Medium & low voltage",badge_substations:"Substations",badge_hvac:"HVAC",badge_fire:"Fire protection",badge_automation:"Automation",badge_cctv:"CCTV",about_title:"About us",about_text:"We are Multiservicios Industriales Ener-Hit, committed to the highest quality standards. We deliver end-to-end engineering solutions with safety and compliance as top priorities.",services_title:"Services",services_sub:"Turn-key solutions. Here are some specialities:",svc_ac_title:"Air conditioning",svc_ac_desc:"Sales, installation & maintenance.",svc_solar_title:"Solar panels",svc_solar_desc:"Installation & maintenance.",svc_substations_title:"Electrical substations",svc_substations_desc:"Installation & maintenance.",svc_lowv_title:"Low voltage",svc_lowv_desc:"Installation & maintenance.",svc_full_list:"See full service list",projects_title:"Projects",projects_sub:"Some of our highlighted projects:",p1_desc:"Industrial fire protection system",p1_kpi:"Hydrants + Pump",p2_title:"Residential solar array",p2_desc:"Micro-inverters + PV. 3.2 kWh; ~16 kWh/day total generation",p2_kpi:"−70% utility bill",p3_desc:"Underground 75 kVA substation at sports facility",p3_kpi:"Commissioned",p4_desc:"37.5 kVA substation at community football field",p4_kpi:"Electrical works",p5_desc:"500 kVA substation for C.W.C plant",p5_kpi:"High capacity",cv_title:"Resume",cv_desc:"Download our detailed project history.",cv_btn:"Download PDF",gallery_title:"Gallery",gallery_hint:"Swipe to see more",clients_title:"Clients",contact_title:"Contact us",contact_sub:"Reach out for tailored assistance.",loc_ap:"Agua Prieta, Sonora",loc_her:"Hermosillo, Sonora",cta_wh_her:"Hermosillo",cta_wh_ap:"Agua Prieta",form_name:"Name",form_email:"Email",form_phone:"Phone (optional)",form_msg:"Tell us about your project…",form_send:"Send",rights:"All rights reserved.",made_in:"Made in Sonora, MX.",testi_title:"Testimonials",testi_sub:"What clients say about us.",t1_txt:"“Excellent execution and on-time delivery. Our plant never stopped.”",t1_role:"Maintenance Management",t2_txt:"“They integrated electrical + HVAC + fire protection. Real utility savings.”",t2_role:"Project Engineering",t3_txt:"“Fast response and top-notch after-sales support.”",t3_role:"Operations",tl_2004:"2004 · Ener-Hit founded",tl_2004_sub:"Residential & commercial electrical services.",tl_2012:"2012 · Industrial expansion",tl_2012_sub:"Substations, MV and automation.",tl_2018:"2018 · Added HVAC & fire protection",tl_2018_sub:"Turn-key multi-discipline solutions.",tl_2024:"2024 · 1000+ delivered projects",tl_2024_sub:"Operational continuity & energy savings."}
+    };
+
+    const langToggle=document.getElementById('langToggle');
+    const langMini=document.getElementById('langMini');
+    function applyI18n(lang){
+      const dict=i18n[lang]||i18n.es; document.documentElement.lang=lang;
+      document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.getAttribute('data-i18n'); if(dict[k]!==undefined) el.textContent=dict[k];});
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{const k=el.getAttribute('data-i18n-placeholder'); if(dict[k]!==undefined) el.setAttribute('placeholder',dict[k]);});
+      langMini.textContent=lang.toUpperCase(); localStorage.setItem('lang',lang);
+    }
+    applyI18n(savedLang||'es');
+    langToggle?.addEventListener('click',()=>{const cur=document.documentElement.lang||'es'; applyI18n(cur==='es'?'en':'es');});
+
+    /* ===== Testimonios controlladores ===== */
+    (function testiNav(){
+      const track=document.getElementById('testiTrack'); if(!track) return;
+      const prev=document.querySelector('.testi-prev'); const next=document.querySelector('.testi-next');
+      prev.addEventListener('click',()=>track.scrollBy({left:-360,behavior:'smooth'}));
+      next.addEventListener('click',()=>track.scrollBy({left:360,behavior:'smooth'}));
+    })();
+  </script>
+</body>
+</html>
